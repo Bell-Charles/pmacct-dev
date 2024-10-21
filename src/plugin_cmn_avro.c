@@ -1135,25 +1135,25 @@ avro_value_t compose_avro_acct_data(u_int64_t wtc, u_int64_t wtc_2, u_int64_t wt
   if (wtc_3 & COUNT_INGRESS_VRF_NAME) {
 
     char *str_ptr;
+    char empty_string[] = "";
+
+    pm_avro_check(avro_value_get_by_name(&value, "ingress_vrf_name", &field, NULL));
 
     vlen_prims_get(pvlen, COUNT_INT_INGRESS_VRF_NAME, &str_ptr);
-    
-    if (str_ptr) {
-      pm_avro_check(avro_value_get_by_name(&value, "ingress_vrf_name", &field, NULL));
-      pm_avro_check(avro_value_set_string(&field, str_ptr));
-    }
+    if (!str_ptr) str_ptr = empty_string;
+    pm_avro_check(avro_value_set_string(&field, str_ptr));
   }
 
   if (wtc_3 & COUNT_EGRESS_VRF_NAME) {
 
     char *str_ptr;
+    char empty_string[] = "";
+
+    pm_avro_check(avro_value_get_by_name(&value, "egress_vrf_name", &field, NULL));
 
     vlen_prims_get(pvlen, COUNT_INT_EGRESS_VRF_NAME, &str_ptr);
-    
-    if (str_ptr) {
-      pm_avro_check(avro_value_get_by_name(&value, "egress_vrf_name", &field, NULL));
-      pm_avro_check(avro_value_set_string(&field, str_ptr));
-    }
+    if (!str_ptr) str_ptr = empty_string;
+    pm_avro_check(avro_value_set_string(&field, str_ptr));
   }
 
   if (wtc & COUNT_IP_PROTO) {
