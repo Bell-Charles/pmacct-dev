@@ -2323,34 +2323,52 @@ void process_v9_packet(unsigned char *pkt, u_int16_t len, struct packet_ptrs_vec
 		  exit_gracefully(1);
 		}
 	      }
-        if (tpl->fld[NF9_VRF_NAME].count) {
-          char *vrf_name;
-
-          if (!entry->vrf_name_map) {
-              entry->vrf_name_map = cdada_map_create(MAX_VRF_NAME+1); /* size of vrf-name */
-              if (!entry->vrf_name_map) {
-                Log(LOG_ERR, "ERROR ( %s/core ): Unable to allocate entry->vrf_name_map. Exiting.\n", config.name);
-                exit_gracefully(1);
-              }
-          }
-          vrf_name = malloc(MAX_VRF_NAME+1);
-          if (!vrf_name) {
-            Log(LOG_ERR, "ERROR ( %s/core ): Unable to malloc vrf_name. Exiting.\n", config.name);
-            exit_gracefully(1);
-          } 
-
-          strncpy(vrf_name, (const char *) pkt+tpl->fld[NF9_VRF_NAME].off[0], MAX_VRF_NAME);
-          vrf_name[MAX_VRF_NAME] = '\0';
-          ret = cdada_map_insert(entry->vrf_name_map, &ingress_vrfid, vrf_name);
-          if (ret != CDADA_SUCCESS && ret != CDADA_E_EXISTS) {
-            Log(LOG_ERR, "ERROR ( %s/core ): Unable to insert in entry->vrf_name_map. Exiting.\n", config.name);
-            exit_gracefully(1);
-          } 
-          Log(LOG_DEBUG, "DEBUG ( %s/core ): Mapped ingress vrf id %d, to vrf_name %s\n", config.name, ingress_vrfid, (char *) vrf_name );
-        }
 	    }
 	  }
 	}
+
+        if ((tpl->fld[NF9_INGRESS_VRFID].len[0] == 4) &&
+            (tpl->fld[NF9_VRF_NAME].len[0] != 0)) {
+            /* Handling the global option scoping case */
+          if (config.nfacctd_disable_opt_scope_check ||
+              tpl->fld[NF9_OPT_SCOPE_SYSTEM].count)
+            entry = (struct xflow_status_entry *) pptrs->f_status_g;
+
+          if (entry) {
+
+            u_int32_t ingress_vrfid = 0;
+
+            memcpy(&ingress_vrfid, pkt+tpl->fld[NF9_INGRESS_VRFID].off[0],
+                   tpl->fld[NF9_INGRESS_VRFID].len[0]);
+            ingress_vrfid = ntohl(ingress_vrfid);
+
+            if (ingress_vrfid && (tpl->fld[NF9_VRF_NAME].count)) {
+              char *vrf_name;
+
+              if (!entry->vrf_name_map) {
+                  entry->vrf_name_map = cdada_map_create(MAX_VRF_NAME+1); /* size of vrf-name */
+                if (!entry->vrf_name_map) {
+                  Log(LOG_ERR, "ERROR ( %s/core ): Unable to allocate entry->vrf_name_map. Exiting.\n", config.name);
+                  exit_gracefully(1);
+                }
+              }
+              vrf_name = malloc(MAX_VRF_NAME+1);
+              if (!vrf_name) {
+                Log(LOG_ERR, "ERROR ( %s/core ): Unable to malloc vrf_name. Exiting.\n", config.name);
+                exit_gracefully(1);
+              } 
+
+              strncpy(vrf_name, (const char *) pkt+tpl->fld[NF9_VRF_NAME].off[0], MAX_VRF_NAME);
+              vrf_name[MAX_VRF_NAME] = '\0';
+              ret = cdada_map_insert(entry->vrf_name_map, &ingress_vrfid, vrf_name);
+              if (ret != CDADA_SUCCESS && ret != CDADA_E_EXISTS) {
+                Log(LOG_ERR, "ERROR ( %s/core ): Unable to insert in entry->vrf_name_map. Exiting.\n", config.name);
+                exit_gracefully(1);
+              } 
+              Log(LOG_DEBUG, "DEBUG ( %s/core ): Mapped ingress vrf id %d, to vrf_name %s\n", config.name, ingress_vrfid, (char *) vrf_name );
+            }
+          }
+        }
 
 	if (config.nfacctd_account_options) {
 	  pptrs->f_data = pkt;
