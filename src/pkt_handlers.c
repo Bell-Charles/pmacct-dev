@@ -2066,9 +2066,9 @@ void NF_vrf_name_handler(struct channels_list_entry *chptr, struct packet_ptrs *
 {
   struct pkt_vlen_hdr_primitives *pvlen = (struct pkt_vlen_hdr_primitives *) ((*data) + chptr->extras.off_pkt_vlen_hdr_primitives);
 
-  if (strlen(pptrs->vrf_name) == 0) {
-    return;
-  }
+  //if (strlen(pptrs->vrf_name) == 0) {
+  //  return;
+  //}
 	
   Log(LOG_ERR, "CPAN (NF_vrf_name_handler): name %s, len %d %d %d\n", pptrs->vrf_name, strlen(pptrs->vrf_name), PmLabelTSz, PmLabelTSz+strlen(pptrs->vrf_name)+1)  ;
 
