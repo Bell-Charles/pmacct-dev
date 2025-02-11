@@ -2043,7 +2043,7 @@ void NF_ingress_vrf_name_handler(struct channels_list_entry *chptr, struct packe
 {
   struct pkt_vlen_hdr_primitives *pvlen = (struct pkt_vlen_hdr_primitives *) ((*data) + chptr->extras.off_pkt_vlen_hdr_primitives);
 
-  if (check_pipe_buffer_space(chptr, pvlen, 3)) {
+  if (check_pipe_buffer_space(chptr, pvlen, PmLabelTSz+3)) {
     vlen_prims_init(pvlen, 0);
     return;
   }
@@ -2055,7 +2055,7 @@ void NF_egress_vrf_name_handler(struct channels_list_entry *chptr, struct packet
 {
   struct pkt_vlen_hdr_primitives *pvlen = (struct pkt_vlen_hdr_primitives *) ((*data) + chptr->extras.off_pkt_vlen_hdr_primitives);
 
-  if (check_pipe_buffer_space(chptr, pvlen, 5)) {
+  if (check_pipe_buffer_space(chptr, pvlen, PmLabelTSz+4)) {
     vlen_prims_init(pvlen, 0);
     return;
   }
@@ -2066,7 +2066,7 @@ void NF_vrf_name_handler(struct channels_list_entry *chptr, struct packet_ptrs *
 {
   struct pkt_vlen_hdr_primitives *pvlen = (struct pkt_vlen_hdr_primitives *) ((*data) + chptr->extras.off_pkt_vlen_hdr_primitives);
 
-  if (check_pipe_buffer_space(chptr, pvlen, 5)) {
+  if (check_pipe_buffer_space(chptr, pvlen, PmLabelTSz+5)) {
     vlen_prims_init(pvlen, 0);
     return;
   }
