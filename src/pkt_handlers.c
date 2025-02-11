@@ -2043,7 +2043,7 @@ void NF_ingress_vrf_name_handler(struct channels_list_entry *chptr, struct packe
 {
   struct pkt_vlen_hdr_primitives *pvlen = (struct pkt_vlen_hdr_primitives *) ((*data) + chptr->extras.off_pkt_vlen_hdr_primitives);
 
-  if (check_pipe_buffer_space(chptr, pvlen, PmLabelTSz+MAX_VRF_NAME_STR_LEN) {
+  if (check_pipe_buffer_space(chptr, pvlen, PmLabelTSz+MAX_VRF_NAME_STR_LEN)) {
     vlen_prims_init(pvlen, 0);
     return;
   }
