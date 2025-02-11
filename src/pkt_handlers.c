@@ -2072,7 +2072,7 @@ void NF_vrf_name_handler(struct channels_list_entry *chptr, struct packet_ptrs *
 	
   Log(LOG_ERR, "CPAN (NF_vrf_name_handler): name %s, len %d %d %d\n", pptrs->vrf_name, strlen(pptrs->vrf_name), PmLabelTSz, PmLabelTSz+strlen(pptrs->vrf_name)+1)  ;
 
-  if (check_pipe_buffer_space(chptr, pvlen, PmLabelTSz+trlen(pptrs->vrf_name)+1)) {
+  if (check_pipe_buffer_space(chptr, pvlen, PmLabelTSz+strlen(pptrs->vrf_name)+1)) {
     vlen_prims_init(pvlen, 0);
     return;
   }
