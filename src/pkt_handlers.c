@@ -2047,7 +2047,7 @@ void NF_ingress_vrf_name_handler(struct channels_list_entry *chptr, struct packe
     vlen_prims_init(pvlen, 0);
     return;
   }
-  else vlen_prims_insert(pvlen, COUNT_INT_INGRESS_VRF_NAME, strlen(pptrs->ingress_vrf_name)+1, (u_char *) pptrs->ingress_vrf_name,, PM_MSG_STR_COPY);
+  else vlen_prims_insert(pvlen, COUNT_INT_INGRESS_VRF_NAME, strlen(pptrs->ingress_vrf_name)+1, (u_char *) pptrs->ingress_vrf_name, PM_MSG_STR_COPY);
 
 }
 
